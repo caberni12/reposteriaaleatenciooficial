@@ -1,0 +1,53 @@
+ALE ATENCIÓN · R9.18.127 · COMPRAS + DTE RECIBIDOS SII · ENTREGA LIVIANA
+
+Esta entrega NO incluye imágenes pesadas de productos/galería para mantener el ZIP liviano.
+Sí incluye los dos recursos esenciales del sistema: logo-ale-atencio.png y favicon.png.
+No elimines otras imágenes que ya existen en tu hosting/GitHub Pages.
+
+NOVEDADES R9.18.127
+- Nuevo módulo cPanel: Compras / DTE recibidos.
+- Importación de XML y archivos EML/MIME con un único XML adjunto.
+- Recepción automática mediante webhook seguro de la Edge Function facturacion-sii.
+- Lectura de proveedor, neto, exento, IVA, total, vencimiento y detalle de ítems.
+- Vinculación/creación de proveedor por RUT.
+- Registro de una factura recibida como compra/ingreso de mercadería sin duplicarla.
+- Sincronización del Registro de Aceptación/Reclamo del SII.
+- Acciones SII: ACD, ERM, RCD, RFP y RFT para DTE compatibles.
+- Control de fecha de recepción SII y plazo de 8 días.
+- Respuestas XML firmadas de intercambio: recepción, aceptación, rechazo y recibo.
+- Corrección de botones/listeners de Intercambio DTE que en R9.18.126 no ejecutaban acciones.
+
+ACTUALIZACIÓN DESDE R9.18.126
+1. Ejecutar en Supabase SQL Editor:
+   INSTALACION_SUPABASE/16_ALE_ATENCIO_SQL_R9_18_127_COMPRAS_DTE_RECIBIDOS_SII.sql
+2. Volver a desplegar la Edge Function:
+   INSTALACION_SUPABASE_EDGE_FUNCTIONS/facturacion-sii/index.ts
+3. Publicar en Web/cPanel:
+   cpanel.html
+   cpanel.js
+   sii-api.js
+4. No es necesario volver a desplegar dynamic-processor si ya usas el de R9.18.126.
+
+RECEPCIÓN AUTOMÁTICA DE DTE POR CORREO
+- Crear en Supabase Edge Function Secrets un secreto fuerte llamado:
+  SII_DTE_INBOUND_SECRET
+- Configurar la casilla de intercambio DTE/servicio de correo entrante para reenviar el mensaje
+  a la Edge Function facturacion-sii mediante webhook.
+- El webhook usa action=exchange_email_ingest y debe enviar el secreto en el header
+  x-ale-dte-secret. Acepta raw_mime, xml o attachment_base64.
+- No escribas el valor real del secreto en HTML, JavaScript público ni GitHub.
+
+SI VIENES DE UNA VERSIÓN ANTERIOR
+Ejecuta, en orden, los SQL que aún no hayas aplicado dentro de INSTALACION_SUPABASE.
+Para Facturación SII, aplica también en orden los SQL de INSTALACION_SUPABASE_SII que falten.
+
+IMPORTANTE
+- Las acciones ACD/ERM/RCD/RFP/RFT tienen efectos tributarios y deben registrarse sólo cuando correspondan.
+- Mantén SII_MASTER_KEY y los demás secretos únicamente en Supabase/servidor.
+- La postulación, Set de Pruebas, simulación, muestras, declaración de cumplimiento y autorización final
+  continúan dependiendo del proceso oficial del SII; este ZIP no significa que el SII ya haya certificado el software.
+
+R9.18.128 · MENÚ CPANEL CATEGORIZADO
+- Sidebar reorganizado en Ventas y Clientes, Web y Catálogo, Compras e Inventario, Mayoristas, Finanzas / SII y Sistema / Configuración.
+- Grupos plegables tipo acordeón; sólo uno abierto a la vez.
+- No requiere SQL nuevo ni cambios de Edge Functions respecto de R9.18.127.
